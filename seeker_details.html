@@ -8,7 +8,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-        // ✅ Firebase Configuration
         const firebaseConfig = {
             apiKey: "ATZaSyBje44kEvBsmIP_x5_LK2yKkKDq9hJFfU",
             authDomain: "ambulancemanagementsystem0103.firebaseapp.com",
@@ -19,20 +18,17 @@
             appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
         };
 
-        // ✅ Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ✅ References to Firebase nodes
         const providersRef = ref(db, "providers");
         const sheltersRef = ref(db, "shelter");
 
-        // ✅ Fetch Providers and Display
         get(providersRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const providersData = snapshot.val();
                 const providerListDiv = document.getElementById("providerList");
-                providerListDiv.innerHTML = ""; // Clear previous content
+                providerListDiv.innerHTML = "";
 
                 Object.keys(providersData).forEach(providerId => {
                     const provider = providersData[providerId];
@@ -50,12 +46,11 @@
             }
         }).catch(error => console.error("Error fetching providers:", error));
 
-        // ✅ Fetch Shelters and Display
         get(sheltersRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const sheltersData = snapshot.val();
                 const shelterListDiv = document.getElementById("shelterList");
-                shelterListDiv.innerHTML = ""; // Clear previous content
+                shelterListDiv.innerHTML = "";
 
                 Object.keys(sheltersData).forEach(shelterId => {
                     const shelter = sheltersData[shelterId];
@@ -74,25 +69,26 @@
                 document.getElementById("shelterList").innerHTML = "<p>No shelters found.</p>";
             }
         }).catch(error => console.error("Error fetching shelters:", error));
-
     </script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
             text-align: center;
         }
-        h2 {
-            color: #333;
-        }
         .container {
-            width: 80%;
-            margin: auto;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
             background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
         }
         .provider-card, .shelter-card {
             border: 1px solid #ccc;
@@ -101,20 +97,26 @@
             border-radius: 8px;
             background-color: #fff;
             text-align: left;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .provider-card h3, .shelter-card h3 {
+            margin: 0;
+            padding-bottom: 10px;
+            color: #007bff;
+        }
+        p {
+            margin: 5px 0;
+            color: #555;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>🏠 Shelter List</h1>
-
         <h2>Providers</h2>
         <div id="providerList"></div>
-
         <h2>Shelters</h2>
         <div id="shelterList"></div>
     </div>
-
 </body>
 </html>
