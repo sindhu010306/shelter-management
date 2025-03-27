@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider | Shelter Providing Website</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Shelter Provider Details</h2>
+        <form id="providerForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="mobile">Mobile Number:</label>
+                <input type="text" id="mobile" required pattern="\d{10}" title="Enter a valid 10-digit mobile number">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email ID:</label>
+                <input type="email" id="email" required pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="Email must be a @gmail.com address">
+            </div>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBje44kEvBsmIP_x5_LK2yKkKDq9hJFfU",
+            authDomain: "ambulancemanagementsystem0103.firebaseapp.com",
+            databaseURL: "https://ambulancemanagementsystem8026-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "ambulancemanagementsystem0103",
+            storageBucket: "ambulancemanagementsystem0103.appspot.com",
+            messagingSenderId: "492214508421",
+            appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Form submission event
+        document.getElementById('providerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const email = document.getElementById('email').value;
+
+            if (!/^[0-9]{10}$/.test(mobile)) {
+                alert("Mobile number must be exactly 10 digits.");
+                return;
+            }
+            if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+                alert("Email must be a valid @gmail.com address.");
+                return;
+            }
+
+            // Store data in Firebase Realtime Database
+            try {
+                await set(ref(db, "providers/" + mobile), {
+                    name: name,
+                    mobile: mobile,
+                    email: email
+                });
+
+                alert("Details submitted successfully!");
+                window.location.href = "shelter_details.html";
+            } catch (error) {
+                console.error("Error storing data:", error);
+                alert("Failed to submit details. Try again.");
+            }
+        });
+    </script>
+</body>
+</html>
