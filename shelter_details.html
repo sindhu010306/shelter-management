@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelter Details</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Add Shelter Details</h2>
+        <form id="shelterForm">
+            <div class="form-group">
+                <label for="providerName">Provider Name:</label>
+                <input type="text" id="providerName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="shelterType">Shelter Type:</label>
+                <select id="shelterType" required>
+                    <option value="temporary">Temporary</option>
+                    <option value="permanent">Permanent</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="capacity">Capacity:</label>
+                <input type="number" id="capacity" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="facilities">Facilities:</label>
+                <textarea id="facilities" rows="4" required></textarea>
+            </div>
+            
+            <button type="submit">Submit Shelter</button>
+        </form>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBje44kEvBsmIP_x5_LK2yKkKDq9hJFfU",
+            authDomain: "ambulancemanagementsystem0103.firebaseapp.com",
+            databaseURL: "https://ambulancemanagementsystem8026-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "ambulancemanagementsystem0103",
+            storageBucket: "ambulancemanagementsystem0103.appspot.com",
+            messagingSenderId: "492214508421",
+            appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Form submission event
+        document.getElementById('shelterForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const providerName = document.getElementById('providerName').value.trim(); // Provider Name
+            const shelterType = document.getElementById('shelterType').value;
+            const location = document.getElementById('location').value;
+            const capacity = document.getElementById('capacity').value;
+            const facilities = document.getElementById('facilities').value;
+
+            if (providerName === "") {
+                alert("Provider name is required!");
+                return;
+            }
+
+            try {
+                // Store data under "shelters/{providerName}"
+                await set(ref(db, `shelter/${providerName}`), {
+                    providerName: providerName,
+                    shelterType: shelterType,
+                    location: location,
+                    capacity: capacity,
+                    facilities: facilities
+                });
+
+                alert("Shelter details submitted successfully!");
+                //window.location.href = "seeker.html"; // Redirect to seeker page after submission
+            } catch (error) {
+                console.error("Error storing data:", error);
+                alert("Failed to submit shelter details. Try again.");
+            }
+        });
+    </script>
+</body>
+</html>

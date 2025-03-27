@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seeker | Login</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Seeker Login</h2>
+        <form id="seekerLoginForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="mobile">Mobile Number:</label>
+                <input type="text" id="mobile" required pattern="\d{10}" title="Enter a valid 10-digit mobile number">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email ID:</label>
+                <input type="email" id="email" required pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="Email must be a @gmail.com address">
+            </div>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+        // ✅ Your Firebase configuration from previous inputs
+        const firebaseConfig = {
+            apiKey: "ATZaSyBje44kEvBsmIP_x5_LK2yKkKDq9hJFfU",
+            authDomain: "ambulancemanagementsystem0103.firebaseapp.com",
+            databaseURL: "https://ambulancemanagementsystem8026-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "ambulancemanagementsystem0103",
+            storageBucket: "ambulancemanagementsystem0103.appspot.com",
+            messagingSenderId: "492214508421",
+            appId: "1:492214508421:web:f2b626eff3ae7c8b73c2ec"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Handle form submission
+        document.getElementById('seekerLoginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get user input values
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const email = document.getElementById('email').value;
+
+            // Validate inputs
+            if (!/^\d{10}$/.test(mobile)) {
+                alert("Mobile number must be exactly 10 digits.");
+                return;
+            }
+            if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+                alert("Email must be a valid @gmail.com address.");
+                return;
+            }
+
+            // Store seeker details in Firebase
+            set(ref(db, "seekers/" + mobile), {
+                name: name,
+                mobile: mobile,
+                email: email
+            })
+            .then(() => {
+                alert("Login Successful!");
+                window.location.href = "seeker_details.html"; // Redirect to seeker page
+            })
+            .catch((error) => {
+                console.error("Error storing seeker details:", error);
+                alert("Failed to login. Try again.");
+            });
+        });
+    </script>
+</body>
+</html>
